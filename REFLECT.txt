@@ -1,0 +1,104 @@
+Name: Andy Nguyen
+NetID: aln20
+
+Hours Spent: 2/10, 2/16, 15 hours
+Consulted with: Students: Austin Zhang and Kevin Deng, no TAs or professors.
+Resources used: No outside resources used
+Impressions: I thought this was a good, difficult application of java.
+Answers to questions:
+1.
+alice.txt, k = 1, 200 characters max: .179 s
+
+alice.txt, k = 1, 400 characters max: .308 s
+
+alice.txt, k = 1, 800 characters max: .568 s
+
+alice.txt, k = 5, 200 characters max: .085 s
+
+alice.txt, k = 5, 400 characters max: .143 s
+
+alice.txt, k = 5, 800 characters max: .238 s
+
+alice.txt, k = 10, 200 characters max: .095 s
+
+alice.txt, k = 10, 400 characters max: .120 s
+
+alice.txt, k = 10, 800 characters max: .230 s
+
+hawthorne.txt, k = 1, 200 characters max: .450 s
+
+hawthorne.txt, k = 1, 400 characters max: .784 s
+
+hawthorne.txt, k = 1, 800 characters max: 1.435 s
+2. 
+Question: Based on these results, what is the relationship between the runtime and the length
+of the training text, the k-value, and the max characters generated? How long do you 
+think it will take to generate 1600 random characters using an order-5 Markov model 
+when the The Complete Works of William Shakespeare is used as the training text — our 
+online copy of this text contains roughly 5.5 million characters. Justify your answer — 
+don’t test empirically, use reasoning.
+
+Answer: The larger the length of the training text, the longer the runtime. The larger the k-value,
+the shorter the runtime. The shorter the number of max characters, the faster the runtime. In fact,
+the max characters generated is near proportional to runtime; for example, if you double the amount of
+max characters, the runtime should nearly double. Thus, if we generate 1600 random numbers, the
+order-5 Markov model should be nearly double that of the 800-random-number-version. It should take
+around .4 s. The reasoning for the runtime being double is because we are scanning the text
+N times and outputting M terms that the text has; making the output 2 times larger results in having
+to scan the text N times, but having to output 2M terms, resulting in double runtime.
+
+3.
+Provide timings using your Efficient model for both creating the map and generating 200, 400, 800, 
+and 1600 character random texts with an order-5 Model and alice.txt. Provide some explanation for 
+the timings you observe.
+
+alice.txt, k = 5, 200 characters max: .116 s
+
+alice.txt, k = 5, 400 characters max: .119 s
+
+alice.txt, k = 5, 800 characters max: .138 s
+
+alice.txt, k = 5, 1600 characters max: .133 s
+
+Explanation for these timings: Since this model scans the text one time in the beginning rather than 
+N times, the length of max characters we choose does not affect the run-time very much. For instance,
+while 1600 characters is much longer than 200 characters, having a structure (HashMap) readily
+available allows for a quick reference for following characters in the getFollows method.
+
+4.
+Provide timings for the EfficientWordMarkov with different hashcode methods. Time the method you are
+given and compare the results that you achieve with the better hashcode method that you developed.
+
+alice.txt, k = 5, 200 characters max, method that returns 32: 116.756 s
+
+alice.txt, k = 5, 200 characters max, slightly better method: .115 s
+
+alice.txt, k = 5, 200 characters max, better method: .093 s
+
+The better hashcode method provides a slightly faster runtime. This is most likely because the better hashcode
+method makes different hashcodes for every single type of WordGram, whereas the hashcodes for the WordGrams
+using the slighlty better hashcode method results in some WordGrams having the same hashcode. Having the same hashcode
+results in having to adjust array indices to store WordGrams inside a map, using up a bit of extra time. The one that
+only returns 32, however, takes very long because of this.
+
+5.
+Using a k of your choice and clinton-convention.txt as the training text, if we do not set a maximum
+number of characters generated (you can effectively do this by having maxLetters be a large number,
+e.g. 1000 times the size of the training text) what is the average number of characters generated 
+by our Markov text generator?
+
+Answer: Using a k value of 2, the average number of characters generated was 32,970.
+
+Part B Analysis: Analyze the performance of HashMap vs. TreeMap
+
+To test this, I made a k value of 5 and a max number of words of 1600. As the number of keys gets large, it seems that TreeMaps are more efficient
+than HashMaps. As can be seen by RuntimePic.png, TreeMaps had a signficantly shorter runtime (.808 s)
+when compared to HashMap (2.6 s) when EfficientWordMarkov read a file that contained 753994 keys.
+However, when we run these two types of maps under smaller key conditions, there are few noticable
+differences between TreeMap and HashMap. The differences between TreeMap and HashMap when using
+a large number of keys may be due to the fact that HashMaps don't sort information, whereas TreeMaps do.
+For the specific goal of outputting words using keys that come directly after those words, it may have
+been useful that the TreeMap sorted the keys; in this sense, the program doesn't have to work as hard
+to move to the next key, resulting in seconds being taken off the runtime.
+
+
